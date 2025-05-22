@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bat-Books</title>
+  <style>
+    body {
+      background-color: #0f0f0f;
+      color: #f1c40f;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 40px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      box-shadow: 0 0 20px #f1c40f88;
+    }
+
+    th, td {
+      border: 2px solid #f1c40f;
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #1a1a1a;
+      font-size: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    td {
+      background-color: #1c1c1c;
+    }
+
+    a button {
+      background-color: #f1c40f;
+      color: black;
+      border: none;
+      padding: 8px 16px;
+      margin: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: 0.3s;
+    }
+
+    a button:hover {
+      background-color: #ffe100;
+      transform: scale(1.1);
+      box-shadow: 0 0 10px #ffe100aa;
+    }
+
+    h1 {
+      color: #f1c40f;
+      text-align: center;
+      font-size: 40px;
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px #f1c40f;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🦇 Bat-Library 🦇</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Назва книги</th>
+        <th>Автор</th>
+        <th>Категорія</th>
+        <th>Дії</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for book in books %}
+      <tr>
+        <td>{{ book.title }}</td>
+        <td>{{ book.author }}</td>
+        <td>{{ book.category }}</td>
+        <td>
+          <a href="/edit/{{book.id}}"><button>Edit</button></a>
+          <a href="/delete/{{book.id}}"><button>Delete</button></a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</body>
+</html>
