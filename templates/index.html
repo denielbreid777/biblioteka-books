@@ -1,75 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bat-Books</title>
+  <meta charset="UTF-8">
+  <title>Список книг</title>
   <style>
     body {
-      background-color: #0f0f0f;
-      color: #f1c40f;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      padding: 40px;
+      font-family: Arial;
+      padding: 20px;
+    }
+
+    select, button {
+      padding: 6px 12px;
+      font-size: 16px;
     }
 
     table {
+      margin-top: 20px;
       width: 100%;
       border-collapse: collapse;
-      box-shadow: 0 0 20px #f1c40f88;
     }
 
     th, td {
-      border: 2px solid #f1c40f;
-      padding: 12px;
-      text-align: center;
+      padding: 10px;
+      border: 1px solid #ccc;
     }
 
     th {
-      background-color: #1a1a1a;
-      font-size: 20px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      background-color: #f0f0f0;
     }
 
-    td {
-      background-color: #1c1c1c;
-    }
-
-    a button {
-      background-color: #f1c40f;
-      color: black;
-      border: none;
-      padding: 8px 16px;
-      margin: 4px;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 6px;
-      transition: 0.3s;
-    }
-
-    a button:hover {
-      background-color: #ffe100;
-      transform: scale(1.1);
-      box-shadow: 0 0 10px #ffe100aa;
-    }
-
-    h1 {
-      color: #f1c40f;
-      text-align: center;
-      font-size: 40px;
-      margin-bottom: 30px;
-      text-shadow: 0 0 10px #f1c40f;
+    .actions button {
+      margin-right: 5px;
     }
   </style>
 </head>
 <body>
 
-  <h1>🦇 Bat-Library 🦇</h1>
+  <h2>Фільтр за категорією</h2>
 
+  <form action="/">
+    <select name="category">
+      <option value="all" {% if selected_category == 'all' %}selected{% endif %}>Усі</option>
+      {% for category in categories %}
+        <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>
+          {{ category }}
+        </option>
+      {% endfor %}
+    </select>
+    <button type="submit">Фільтрувати</button>
+  </form>
+
+  <a href="/add_book"> <button>Add book</button></a>
+
+  {% if msg %}
+      <p style="color: green; font-weight: bold;">
+        Книга "{{ msg }}" додана успішно!
+      </p>
+  {% endif %}
+
+
+
+  <h3>Список книг</h3>
   <table>
     <thead>
       <tr>
-        <th>Назва книги</th>
+        <th>Назва</th>
         <th>Автор</th>
         <th>Категорія</th>
         <th>Дії</th>
@@ -77,15 +72,15 @@
     </thead>
     <tbody>
       {% for book in books %}
-      <tr>
-        <td>{{ book.title }}</td>
-        <td>{{ book.author }}</td>
-        <td>{{ book.category }}</td>
-        <td>
-          <a href="/edit/{{book.id}}"><button>Edit</button></a>
-          <a href="/delete/{{book.id}}"><button>Delete</button></a>
-        </td>
-      </tr>
+        <tr>
+          <td>{{ book.title }}</td>
+          <td>{{ book.author }}</td>
+          <td>{{ book.category }}</td>
+          <td class="actions">
+            <a href="/edit "><button>Edit</button></a>
+            <a href="/delete "><button>Delete</button></a>
+          </td>
+        </tr>
       {% endfor %}
     </tbody>
   </table>
