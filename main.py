@@ -1,5 +1,4 @@
-from flask import Flask, render_template, request, make_response
-
+from flask import Flask, render_template, request, redirect,     url_for
 
 app = Flask(__name__)
 
@@ -11,35 +10,57 @@ class Book:
         self.category = category
 
 
-
 book_list = [
-    Book( "1984", "George Orwell", "Dystopian"),
-    Book( "To Kill a Mockingbird", "Harper Lee", "Classic"),
-    Book( "The Great Gatsby", "F. Scott Fitzgerald", "Classic"),
-    Book( "Brave New World", "Aldous Huxley", "Dystopian"),
-    Book( "Moby Dick", "Herman Melville", "Adventure"),
-    Book( "Pride and Prejudice", "Jane Austen", "Romance"),
-    Book( "The Hobbit", "J.R.R. Tolkien", "Fantasy"),
-    Book( "Fahrenheit 451", "Ray Bradbury", "Dystopian"),
-    Book( "Harry Potter and the Sorcerer's Stone", "J.K. Rowling", "Fantasy"),
-    Book( "The Catcher in the Rye", "J.D. Salinger", "Classic"),
-    Book( "The Lord of the Rings", "J.R.R. Tolkien", "Fantasy"),
-    Book( "Crime and Punishment", "Fyodor Dostoevsky", "Philosophical"),
-    Book( "The Brothers Karamazov", "Fyodor Dostoevsky", "Philosophical"),
-    Book( "War and Peace", "Leo Tolstoy", "Historical"),
-    Book( "Anna Karenina", "Leo Tolstoy", "Romance"),
-    Book( "The Alchemist", "Paulo Coelho", "Adventure"),
-    Book( "The Picture of Dorian Gray", "Oscar Wilde", "Gothic"),
-    Book( "The Martian", "Andy Weir", "Science Fiction"),
-    Book( "Dune", "Frank Herbert", "Science Fiction"),
-    Book( "Dracula", "Bram Stoker", "Gothic"),
+    Book("1984", "George Orwell", "Dystopian"),
+    Book("To Kill a Mockingbird", "Harper Lee", "Classic"),
+    Book("The Great Gatsby", "F. Scott Fitzgerald", "Classic"),
+    Book("Brave New World", "Aldous Huxley", "Dystopian"),
+    Book("Moby Dick", "Herman Melville", "Adventure"),
+    Book("Pride and Prejudice", "Jane Austen", "Romance"),
+    Book("The Hobbit", "J.R.R. Tolkien", "Fantasy"),
+    Book("Fahrenheit 451", "Ray Bradbury", "Dystopian"),
+    Book("Harry Potter and the Sorcerer's Stone", "J.K. Rowling", "Fantasy"),
+    Book("The Catcher in the Rye", "J.D. Salinger", "Classic"),
+    Book("The Lord of the Rings", "J.R.R. Tolkien", "Fantasy"),
+    Book("Crime and Punishment", "Fyodor Dostoevsky", "Philosophical"),
+    Book("The Brothers Karamazov", "Fyodor Dostoevsky", "Philosophical"),
+    Book("War and Peace", "Leo Tolstoy", "Historical"),
+    Book("Anna Karenina", "Leo Tolstoy", "Romance"),
+    Book("The Alchemist", "Paulo Coelho", "Adventure"),
+    Book("The Picture of Dorian Gray", "Oscar Wilde", "Gothic"),
+    Book("The Martian", "Andy Weir", "Science Fiction"),
+    Book("Dune", "Frank Herbert", "Science Fiction"),
+    Book("Dracula", "Bram Stoker", "Gothic"),
 ]
 
-
-
-@app.route("/")
+@app.route('/')
 def home():
-    return render_template("index.html", books=book_list)
+    selected_category = request.args.get("category", "all")
+    msg = request.args.get("msg", None)
+
+    if selected_category == "all":
+        filtered_books = book_list
+    else:
+        filtered_books = [book for book in book_list if book.category == selected_category]
+
+    # Унікальні категорії:
+    categories = sorted(set(book.category for book in book_list))
+
+    return render_template("index.html", books=filtered_books, categories=categories, selected_category=selected_category, msg=msg)
+
+
+
+@app.route("/add_book")
+def add_book():
+    name = request.args.get("name")
+    author = request.args.get("author")
+    category = request.args.get("category")
+
+    if name and author and category:
+        book_list.append(Book(name, author, category))
+        return redirect(url_for("home", msg=name))
+
+    return render_template("add_book.html")
 
 
 
@@ -55,20 +76,6 @@ def home():
 
 
 
+if __name__ == "__main__":
+    app.run(debug=True)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.run(debug=True)
