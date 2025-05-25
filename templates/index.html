@@ -77,7 +77,11 @@
           <td>{{ book.author }}</td>
           <td>{{ book.category }}</td>
           <td class="actions">
-            <a href="/edit "><button>Edit</button></a>
+            <form action="/edit"> 
+              <input type="hidden" name="title" value="{{book.title}}">
+              <button type="submit" >Edit</button></a>
+            </form>
+
             <a href="/delete "><button>Delete</button></a>
           </td>
         </tr>

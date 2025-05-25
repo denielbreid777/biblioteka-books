@@ -60,10 +60,58 @@ def add_book():
         book_list.append(Book(name, author, category))
         return redirect(url_for("home", msg=name))
 
-    return render_template("add_book.html")
+    return render_template("add_book.html", categories = sorted(set(book.category for book in book_list))
+)
+
+# @app.rout("/edit")
+# def edit():
+#     name = request.args.get("name")
+#     author = request.args.get("author")
+#     category = request.args.get("category")
+#     old_title = request.args.get("old_title")
+
+#     if name and author and category:
+#         for book in book_list:
+#             if book.title == request.args.get("title"):
+#                 book.title 
+#     else:
+#         our_book = None
+#         for book in book_list:
+#             if book.title == request.args.get("title"):
+#                 our_book = book
+
+#         return render_template("edit.html", book=our_book, categories = sorted(set(book.category for book in book_list))
+# )
 
 
+@app.route("/edit")
+def edit():
+    new_title = request.args.get("title")
+    new_author = request.args.get("author")
+    new_category = request.args.get("category")
+    old_title_value = request.args.get("old_title")
 
+
+    if new_title and new_author and new_category and old_title_value:
+        for book in book_list:
+            if book.title == old_title_value:
+                book.title = new_title
+                book.author = new_author
+                book.category = new_category
+                return redirect(url_for("home", msg=f"Книга '{new_title}' оновлена"))
+
+    if request.args.get("title"):
+        title_to_edit = request.args.get("title")
+        book_to_edit = None
+
+        for book in book_list:
+            if book.title == title_to_edit:
+                book_to_edit = book
+                break 
+
+
+        return render_template("edit.html", book=book_to_edit, old_title=title_to_edit, categories = sorted(set(book.category for book in book_list))
+)
 
 
 
