@@ -54,7 +54,7 @@
 
   {% if msg %}
       <p style="color: green; font-weight: bold;">
-        Книга "{{ msg }}" додана успішно!
+        {{ msg }}
       </p>
   {% endif %}
 
@@ -82,7 +82,11 @@
               <button type="submit" >Edit</button></a>
             </form>
 
-            <a href="/delete "><button>Delete</button></a>
+            <form action="/delete"> 
+              <input type="hidden" name="title" value="{{book.title}}">
+              <button type="submit" >Delete</button></a>
+            </form>
+
           </td>
         </tr>
       {% endfor %}
