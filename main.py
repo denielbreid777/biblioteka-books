@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, request, redirect,     url_for
 
 app = Flask(__name__)
@@ -33,6 +34,7 @@ book_list = [
     Book("Dracula", "Bram Stoker", "Gothic"),
 ]
 
+custom_categories = []
 
 
 @app.route('/')
@@ -42,7 +44,8 @@ def home():
    
     filtered_books = book_list  if selected_category == "all" else [book for book in book_list if book.category == selected_category] 
 
-    categories = sorted(set(book.category for book in book_list))
+    categories = sorted(set(book.category for book in book_list).union(custom_categories))
+
 
     return render_template("index.html", books=filtered_books, categories=categories, selected_category=selected_category, msg=msg)
 
@@ -58,8 +61,8 @@ def add_book():
         book_list.append(Book(name, author, category))
         return redirect(url_for("home", msg=name))
 
-    return render_template("add_book.html", categories = sorted(set(book.category for book in book_list))
-)
+    return render_template("add_book.html", categories = sorted(set(book.category for book in book_list).union(custom_categories)))
+
 
 
 @app.route("/edit", methods=['POST', 'GET']) 
@@ -88,8 +91,8 @@ def edit():
                 break 
 
 
-        return render_template("edit.html", book=book_to_edit, old_title=title_to_edit, categories = sorted(set(book.category for book in book_list))
-)
+        return render_template("edit.html", book=book_to_edit, old_title=title_to_edit,  categories = sorted(set(book.category for book in book_list).union(custom_categories)))
+
 
 @app.route("/delete")
 def delete():
@@ -97,6 +100,39 @@ def delete():
         if book.title == request.args.get("title"):
             book_list.remove(book)
     return redirect(url_for("home"))
+
+
+@app.route("/search")
+def search():
+    name = request.args.get("name")
+    if name:
+        name = name.strip().lower()
+    else:
+        name = ""
+
+        
+    if name:
+        for book in book_list:
+            if name == book.title.lower() or name == book.author.lower():
+                return render_template("search.html", book=book)
+
+        return render_template("search.html", book=None, msg="Ничего не найдено")
+
+    return render_template("search.html", book=None)
+
+
+@app.route("/add_category", methods=["GET"])
+def add_category():
+    category_name = request.args.get("name")
+    
+    if category_name:
+        if category_name not in custom_categories:
+            custom_categories.append(category_name)
+            return redirect(url_for("home", msg=f"Категория '{category_name}' добавлена!"))
+        else:
+            return redirect(url_for("home", msg=f"Категория '{category_name}' уже существует!"))
+    else:
+        return redirect(url_for("home", msg="Введите название категории!"))
 
 
 
